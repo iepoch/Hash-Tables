@@ -7,6 +7,7 @@ class Pair:
     def __init__(self, key, value):
         self.key = key
         self.value = value
+        self.next = None
 
 
 # '''
@@ -24,12 +25,12 @@ class BasicHashTable:
 # Fill this in.
 # Research and implement the djb2 hash function
 # '''
-def hash(string):
+def hash(string, max):
     hash = 5381
 
     for i in string:
-        hash = (((hash << 5) + hash) + ord(i)) & 0xFFFFFFFF
-    return hash
+        hash = (((hash << 5) + hash) + ord(i))
+    return hash % max
 # '''
 # Fill this in.
 
@@ -38,23 +39,35 @@ def hash(string):
 
 
 def hash_table_insert(hash_table, key, value):
-    key_hash = hash(key)
-    key_value = Pair(key, value)
+    index = hash(key, hash_table.capacity)
+    new_pair = Pair(key, value)
 
-    # to get the index you need take the has modulus by the size(capcity)
-    index = key_hash % hash_table.capacity
-    # we want to check if the storage is not None
-    if hash_table.storage[index] is not None:
-        # If the key matches the key in the storage
-        if key == hash_table.storage[index].key:
-            # Then we want to know that it's a collision
-            print(f'Collision found with {key}')
-        else:
-            # Otherwise we can take the value and set it to our storage value
-            hash_table.storage[index].value = value
+    # # to get the index you need take the has modulus by the size(capcity)
+    # index = key_hash % hash_table.capacity
+    # # we want to check if the storage is not None
+    # if hash_table.storage[index] is not None:
+    #     # If the key matches the key in the storage
+    #     if key == hash_table.storage[index].key:
+    #         # Then we want to know that it's a collision
+    current_pair = hash_table.storage[index]
+
+    while current_pair is not None and current_pair.key != key:
+        last_pair = current_pair
+        current_pair = current_pair.next
+    if current_pair is None:
+        new_pair = Pair(key, value)
+        new_pair.next = hash_table.storage[index]
+        hash_table.storage[index] = new_pair
     else:
-        # if storage is none then set the store to the value pair
-        hash_table.storage[index] = key_value
+        current_pair.value = value
+        # print(f'Collision found with {key}')
+
+    #     else:
+    #         # Otherwise we can take the value and set it to our storage value
+    #         hash_table.storage[index].value = value
+    # else:
+    #     # if storage is none then set the store to the value pair
+    #     hash_table.storage[index] = key_value
 
 
 # '''
@@ -64,9 +77,9 @@ def hash_table_insert(hash_table, key, value):
 # '''
 def hash_table_remove(hash_table, key):
     # same here we want to get the hashed key
-    key_hash = hash(key)
+    index = hash(key,  hash_table.capacity)
     # Take the hash key and modulus with size(capacity) to get the index
-    index = key_hash % hash_table.capacity
+
     # Take the index of the storage and verify if its set to None
     if hash_table.storage[index] is not None:
         # if the hash storage is not none. Then set it to None
@@ -83,9 +96,7 @@ def hash_table_remove(hash_table, key):
 # '''
 def hash_table_retrieve(hash_table, key):
      # same here we want to get the hashed key
-    key_hash = hash(key)
-    # Take the hash key and modulus with size(capacity) to get the index
-    index = key_hash % hash_table.capacity
+    index = hash(key,  hash_table.capacity)
     # Take the index of the storage and verify if its set to None
     if hash_table.storage[index] is not None:
         # if it not none then check if the key is = to the storage key
@@ -98,6 +109,8 @@ def hash_table_retrieve(hash_table, key):
 
 def Testing():
     ht = BasicHashTable(16)
+#   hash_table_insert(ht, "line", "Here today...\n")
+#   hash_table_insert(ht, "line", "Here today...\n")
 
     hash_table_insert(ht, "line", "Here today...\n")
 

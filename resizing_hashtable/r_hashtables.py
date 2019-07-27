@@ -17,14 +17,20 @@ class LinkedPair:
 # '''
 class HashTable:
     def __init__(self, capacity):
-        pass
+        self.capacity = capacity
+        self.storage = [None] * capacity
+        self.count = 0
 
 
 # '''
 # Research and implement the djb2 hash function
 # '''
 def hash(string, max):
-    pass
+    hash = 5381
+
+    for i in string:
+        hash = ((hash << 5) + hash) + ord(i)
+    return hash % max
 
 
 # '''
@@ -33,7 +39,17 @@ def hash(string, max):
 # Hint: Used the LL to handle collisions
 # '''
 def hash_table_insert(hash_table, key, value):
-    pass
+    index = hash(key, hash_table.capacity)
+    new_pair = LinkedPair(key, value)
+    current_pair = hash_table.storage[index]
+    while current_pair is not None and current_pair.key != key:
+        current_pair = current_pair.next
+    if current_pair is None:
+        new_pair = LinkedPair(key, value)
+        new_pair.next = hash_table.storage[index]
+        hash_table.storage[index] = new_pair
+    else:
+        current_pair.value = value
 
 
 # '''
@@ -42,7 +58,17 @@ def hash_table_insert(hash_table, key, value):
 # If you try to remove a value that isn't there, print a warning.
 # '''
 def hash_table_remove(hash_table, key):
-    pass
+   # same here we want to get the hashed key
+    index = hash(key,  hash_table.capacity)
+    # Take the hash key and modulus with size(capacity) to get the index
+
+    # Take the index of the storage and verify if its set to None
+    if hash_table.storage[index] is not None:
+        # if the hash storage is not none. Then set it to None
+        hash_table.storage[index] = None
+    else:
+        # If it is none then we can send a message to Say There is not a key in the table
+        print(f'{key} is not in the hash table. So it can not be removed')
 
 
 # '''
@@ -51,14 +77,28 @@ def hash_table_remove(hash_table, key):
 # Should return None if the key is not found.
 # '''
 def hash_table_retrieve(hash_table, key):
-    pass
-
+     # same here we want to get the hashed key
+    index = hash(key,  hash_table.capacity)
+    # Take the index of the storage and verify if its set to None
+    if hash_table.storage[index] is not None:
+        # if it not none then check if the key is = to the storage key
+        if hash_table.storage[index].key == key:
+            # if it is = to storage key return the value in storage
+            return hash_table.storage[index].value
 
 # '''
 # Fill this in
 # '''
+
+
 def hash_table_resize(hash_table):
-    pass
+    new_hash_table = HashTable(hash_table.capacity * 2)
+    new_hash_table_storage = [None] * new_hash_table.capacity
+
+    for i in range(len(hash_table.storage)):
+        new_hash_table_storage[i] = hash_table.storage[i]
+        hash_table.storage[i] = None
+    return new_hash_table
 
 
 def Testing():

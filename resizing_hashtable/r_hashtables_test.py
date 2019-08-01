@@ -153,7 +153,7 @@ class TestFullHashTable(unittest.TestCase):
         ht = hash_table_resize(ht)
 
         self.assertTrue(len(ht.storage) == 16)
-
+        print('Hash Retrieved', hash_table_retrieve(ht, "key-0"))
         return_value = hash_table_retrieve(ht, "key-0")
         self.assertTrue(return_value == "val-0")
         return_value = hash_table_retrieve(ht, "key-1")

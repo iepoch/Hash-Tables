@@ -111,7 +111,7 @@ def Testing():
     ht = BasicHashTable(16)
 #   hash_table_insert(ht, "line", "Here today...\n")
 #   hash_table_insert(ht, "line", "Here today...\n")
-
+  
     hash_table_insert(ht, "line", "Here today...\n")
 
     hash_table_remove(ht, "line")
